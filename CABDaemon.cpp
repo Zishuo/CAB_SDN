@@ -10,7 +10,7 @@
 #include <boost/asio.hpp>
 #include <utility>
 #include "Message.hpp"
-#include "BucketTree.h"
+#include "libcab/BucketTree.h"
 
 using boost::asio::ip::tcp;
 
@@ -18,9 +18,8 @@ using boost::asio::ip::tcp;
 class Adapter
 {
 public:
-    Adapter(bucket_tree && bTree):bTree_(std::forward<bucket_tree>(bTree))
-    {
-    }
+    Adapter(bucket_tree & bTree):bTree_(bTree) {}
+    Adapter(bucket_tree && bTree):bTree_(std::move(bTree)){}
 
     void process(Message & msg)
     {
@@ -190,10 +189,10 @@ class chat_server
 public:
     chat_server(boost::asio::io_service& ios,
                 const tcp::endpoint& endpoint,
-                Adapter && adapter)
+                Adapter&& adapter)
         : ios_(ios),
           acceptor_(ios, endpoint),
-          adapter_(std::forward<Adapter>(adapter))
+          adapter_(std::move(adapter))
     {
         do_accept();
     }
@@ -253,3 +252,4 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+

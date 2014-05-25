@@ -2,16 +2,17 @@ cmake_minimum_required(VERSION 2.8)
 project(CAB_SDN)
 
 set(CMAKE_CXX_COMPILER /etc/alternatives/g++)
-set(executable_output_path ${project_binary_dir}/bin)
-set(library_output_path ${project_binary_dir}/lib)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 set(CMAKE_CXX_FLAGS "-std=c++0x -g")
-find_package(Boost 1.55.0 COMPONENTS system thread filesystem iostreams log log_setup )
+find_package(Boost 1.55.0 COMPONENTS system thread filesystem iostreams log log_setup)
 
 include_directories(./)
-aux_source_directory(. src_list)
-set(CAB BucketTree.cpp MicRuleTree.cpp RuleList.cpp OFswitch.cpp BucketTree.cpp TraceAnalyze.cpp TraceGen.cpp)
-add_library(cab ${CAB})
+include_directories(./libcab)
+add_subdirectory(libcab)
+
+
 add_executable(SimuFinal SimuFinal.cpp)
 add_executable(CABDaemon CABDaemon.cpp)
 add_executable(trace2pcap pcap_dump.cpp)
@@ -46,5 +47,5 @@ elseif(APPLE)
 endif(UNIX)
 
 message(STATUS "c++ flag : "${CMAKE_CXX_FLAGS}) 
-message(STATUS "this is source dir "${project_source_dir})
-message(STATUS "this is binary dir "${project_binary_dir})
+message(STATUS "this is source dir "${PROJECT_SOURCE_DIR})
+message(STATUS "this is binary dir "${PROJECT_BINARY_DIR})
